@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Notes</h2>
+
+        <ul class="menu">
+            <li><a style="text-decoration: none; color: white;"href="/login">📝 My Notes </a></li>
+            <li class="active">👤 Profile</li>
+            <li>⚙ Settings</li>
+        </ul>
+
+        <a href="/logout" class="logout">Logout</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div>
+                <h1><%=user.name%> Profile</h1>
+                <p>Manage your personal information</p>
+            </div>
+            <div class="avatar">👤</div>
+        </header>
+
+        <!-- PROFILE CARD -->
+        <section class="profile-card">
+
+            <div class="profile-left">
+                <div class="profile-avatar">👤</div>
+                <h2><%=user.name%></h2>
+                <p class="role">Standard User</p>
+            </div>
+
+            <div class="profile-right">
+                <form action="/profile" method="POST">
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" value=<%=user.name%> name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" value="<%=user.email%>"disabled>
+                    </div>
+
+                    
+
+                    <button class="save-btn">Save Changes</button>
+
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: #f6f7fb;
+    color: #222;
+}
+
+/* APP */
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #667eea, #764ba2);
+    color: white;
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+.menu {
+    list-style: none;
+    flex: 1;
+}
+
+.menu li {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.menu .active,
+.menu li:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.logout {
+    text-decoration: none;
+    background: rgba(0,0,0,0.25);
+    padding: 12px;
+    text-align: center;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 35px 45px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: 28px;
+}
+
+.header p {
+    color: #666;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* PROFILE CARD */
+.profile-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
+
+/* LEFT */
+.profile-left {
+    background: linear-gradient(180deg, #667eea, #764ba2);
+    color: white;
+    padding: 35px;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+   
+    font-weight: 700;
+    margin: 0 auto 15px;
+}
+
+.profile-left h2 {
+    margin-bottom: 5px;
+}
+
+.role {
+    opacity: 0.85;
+}
+
+/* RIGHT */
+.profile-right {
+    padding: 35px 45px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.form-group input:disabled {
+    background: #f2f2f2;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+</style>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Notes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Inter",sans-serif;
+}
+
+body{
+background:#f6f7fb;
+color:#222;
+}
+
+.app{
+display:flex;
+min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:250px;
+background:linear-gradient(180deg,#667eea,#764ba2);
+color:white;
+padding:30px 25px;
+display:flex;
+flex-direction:column;
+}
+
+.logo{
+font-size:26px;
+font-weight:700;
+margin-bottom:40px;
+}
+
+.menu{
+list-style:none;
+flex:1;
+}
+
+.menu li{
+padding:14px 18px;
+border-radius:10px;
+margin-bottom:12px;
+transition:0.3s;
+}
+
+.menu li:hover,
+.menu .active{
+background:rgba(255,255,255,0.2);
+}
+
+.menu a{
+text-decoration:none;
+color:white;
+display:block;
+}
+
+.logout{
+text-decoration:none;
+background:rgba(0,0,0,0.25);
+padding:12px;
+text-align:center;
+border-radius:10px;
+color:white;
+font-weight:600;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+padding:35px 45px;
+overflow-y:auto;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:35px;
+}
+
+.header h1{
+font-size:28px;
+}
+
+.header p{
+color:#666;
+}
+
+.avatar{
+width:45px;
+height:45px;
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+}
+
+/* EDITOR */
+
+.editor{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 12px 30px rgba(0,0,0,0.1);
+margin-bottom:40px;
+}
+
+.editor-row{
+display:flex;
+gap:15px;
+margin-bottom:15px;
+}
+
+.editor-row input[type="text"]{
+flex:2;
+padding:10px;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.editor-row input[type="date"]{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.editor textarea{
+width:100%;
+border:1px solid #ddd;
+border-radius:10px;
+padding:10px;
+height:90px;
+resize:none;
+margin-bottom:15px;
+}
+
+.editor button{
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+border:none;
+padding:12px 26px;
+border-radius:30px;
+cursor:pointer;
+font-weight:600;
+}
+
+/* NOTES */
+
+.notes-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+gap:25px;
+}
+
+.note-card{
+background:white;
+padding:22px;
+border-radius:18px;
+box-shadow:0 12px 30px rgba(0,0,0,0.12);
+transition:0.3s;
+}
+
+.note-card:hover{
+transform:translateY(-6px);
+}
+
+.note-date{
+display:inline-block;
+background:#eef2ff;
+color:#667eea;
+padding:4px 10px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.note-card h3{
+margin-bottom:8px;
+}
+
+.note-card p{
+color:#555;
+font-size:14px;
+}
+
+.delete-btn{
+border:none;
+background:none;
+cursor:pointer;
+font-size:18px;
+float:right;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<h2 class="logo">Notes</h2>
+
+<ul class="menu">
+<li class="active">📝 My Notes</li>
+
+<li>
+<a href="/profile">👤 Profile</a>
+</li>
+
+<li>⚙ Settings</li>
+</ul>
+
+<a href="/logout" class="logout">Logout</a>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main">
+
+<header class="header">
+
+<div>
+<h1>Hello, <%= user.name %> 👋</h1>
+<p>Your personal notes space</p>
+</div>
+
+<div class="avatar">
+<a href="/profile" style="text-decoration:none;color:white;">👤</a>
+</div>
+
+</header>
+
+<!-- ADD NOTE -->
+
+<form action="/add/<%= user._id %>" method="POST">
+
+<section class="editor">
+
+<div class="editor-row">
+<input type="text" name="title" placeholder="Note title" required>
+<input type="date" name="Date" required>
+</div>
+
+<textarea name="content" placeholder="Write your note here..." required></textarea>
+
+<button type="submit">Add Note</button>
+
+</section>
+
+</form>
+
+<!-- NOTES -->
+
+<section class="notes-grid">
+
+<% for(let i=0;i<notes.length;i++){ %>
+
+<div class="note-card">
+
+<div class="note-date">
+📅 <%= new Date(notes[i].Date).toLocaleDateString("en-IN") %>
+</div>
+
+<h3><%= notes[i].title %></h3>
+
+<p><%= notes[i].content %></p>
+
+<form action="/delete/<%= notes[i]._id %>" method="POST">
+
+<button class="delete-btn">🗑️</button>
+
+</form>
+
+</div>
+
+<% } %>
+
+</section>
+
+</main>
+
+</div>
+
+</body>
+</html>
