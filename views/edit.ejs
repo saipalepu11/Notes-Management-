@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Note</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+*{ margin:0; padding:0; box-sizing:border-box; font-family:"Inter",sans-serif; }
+
+body{ background:#f6f7fb; color:#222; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+body.dark{ background:#1a1a2e; color:#e0e0e0; }
+
+.card{
+  background:white; padding:35px 40px; border-radius:20px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.12); width:100%; max-width:520px;
+}
+body.dark .card{ background:#2a2a3e; box-shadow:0 12px 40px rgba(0,0,0,0.4); }
+
+.card-header{
+  display:flex; justify-content:space-between;
+  align-items:center; margin-bottom:28px;
+}
+.card-header h2{ font-size:22px; }
+
+.dark-toggle{
+  background:none; border:2px solid #667eea;
+  border-radius:20px; padding:5px 12px;
+  cursor:pointer; font-size:13px; font-weight:600;
+  color:#667eea;
+}
+body.dark .dark-toggle{ border-color:#a78bfa; color:#a78bfa; }
+
+.form-group{ margin-bottom:18px; }
+.form-group label{
+  display:block; font-size:13px; font-weight:600;
+  color:#555; margin-bottom:6px;
+}
+body.dark .form-group label{ color:#aaa; }
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea{
+  width:100%; padding:11px 14px; border-radius:10px;
+  border:1px solid #ddd; font-size:14px;
+  background:white; color:#222; outline:none;
+  transition:border 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{ border-color:#667eea; }
+
+body.dark .form-group input,
+body.dark .form-group select,
+body.dark .form-group textarea{
+  background:#1a1a2e; border-color:#555; color:#e0e0e0;
+}
+
+.form-group textarea{ height:120px; resize:none; }
+
+.color-row{ display:flex; align-items:center; gap:12px; }
+.color-row input[type="color"]{
+  width:40px; height:40px; border:none;
+  border-radius:50%; cursor:pointer; padding:2px; background:none;
+}
+.color-row span{ font-size:13px; color:#888; }
+
+.counter{ font-size:12px; color:#aaa; text-align:right; margin-top:4px; }
+
+.btn-row{ display:flex; gap:12px; margin-top:24px; }
+
+.btn-save{
+  flex:1; background:linear-gradient(135deg,#667eea,#764ba2);
+  color:white; border:none; padding:13px;
+  border-radius:30px; cursor:pointer; font-weight:600; font-size:15px;
+}
+.btn-cancel{
+  flex:1; background:#f1f5f9; color:#555;
+  border:none; padding:13px; border-radius:30px;
+  cursor:pointer; font-weight:600; font-size:15px;
+  text-decoration:none; text-align:center;
+}
+body.dark .btn-cancel{ background:#1a1a2e; color:#aaa; }
+
+.btn-save:hover{ opacity:0.9; }
+.btn-cancel:hover{ background:#e2e8f0; }
+
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="card-header">
+    <h2>✏️ Edit Note</h2>
+    <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
+  </div>
+
+  <form action="/edit/<%= note._id %>" method="POST">
+
+    <!-- Title -->
+    <div class="form-group">
+      <label>📝 Title</label>
+      <input type="text" name="title" value="<%= note.title %>" required>
+    </div>
+
+    <!-- Tag -->
+    <div class="form-group">
+      <label>🏷️ Category</label>
+      <select name="tag">
+        <option value="Other"    <%= note.tag === 'Other'    ? 'selected' : '' %>>🏷 Other</option>
+        <option value="Work"     <%= note.tag === 'Work'     ? 'selected' : '' %>>💼 Work</option>
+        <option value="Personal" <%= note.tag === 'Personal' ? 'selected' : '' %>>👤 Personal</option>
+        <option value="Study"    <%= note.tag === 'Study'    ? 'selected' : '' %>>📚 Study</option>
+      </select>
+    </div>
+
+    <!-- Color -->
+    <div class="form-group">
+      <label>🎨 Card Color</label>
+      <div class="color-row">
+        <input type="color" name="color" value="<%= note.color || '#ffffff' %>" id="colorPicker">
+        <span>Pick a background color for this note</span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="form-group">
+      <label>📄 Content</label>
+      <textarea name="content" id="noteContent" required><%= note.content %></textarea>
+      <div class="counter" id="counter">0 words · 0 characters</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <a href="/login" class="btn-cancel">Cancel</a>
+      <button type="submit" class="btn-save">💾 Save Changes</button>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+
+// ── Dark Mode ─────────────────────────────────────────────────────
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  document.getElementById("darkBtn").textContent = isDark ? "☀️ Light" : "🌙 Dark";
+}
+window.addEventListener("DOMContentLoaded", () => {
+  if(localStorage.getItem("theme") === "dark"){
+    document.body.classList.add("dark");
+    document.getElementById("darkBtn").textContent = "☀️ Light";
+  }
+
+  // ── Word / Char Count ───────────────────────────────────────────
+  const textarea = document.getElementById("noteContent");
+  const counter  = document.getElementById("counter");
+
+  function updateCount(){
+    const text  = textarea.value;
+    const chars = text.length;
+    const words = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+    counter.textContent = `${words} word${words !== 1 ? "s" : ""} · ${chars} character${chars !== 1 ? "s" : ""}`;
+  }
+
+  textarea.addEventListener("input", updateCount);
+  updateCount(); // run on load to show count of existing content
+});
+
+</script>
+</body>
+</html>
