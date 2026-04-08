@@ -23,10 +23,31 @@ const noteSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
+    },
+
+    // ─── Feature 1: Note Categories/Tags ──────────────────────────────
+    tag: {
+      type: String,
+      enum: ["Work", "Personal", "Study", "Other"],
+      default: "Other"
+    },
+
+    // ─── Feature 2: Pin Important Notes ───────────────────────────────
+    pinned: {
+      type: Boolean,
+      default: false
+    },
+
+    // ─── Feature 3: Note Colors ────────────────────────────────────────
+    color: {
+      type: String,
+      default: "#ffffff"
     }
+
+   
   },
   {
-    timestamps: true
+    timestamps: true   // gives createdAt + updatedAt automatically
   }
 );
 
