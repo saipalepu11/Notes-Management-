@@ -3,306 +3,610 @@
 <head>
 <meta charset="UTF-8">
 <title>My Notes</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Inter",sans-serif;
+:root {
+  --ink:    #0f0e17;
+  --paper:  #fffcf5;
+  --accent: #ff6b35;
+  --muted:  #9a9180;
+  --border: #e8e0d0;
+  --card:   #ffffff;
+  --sidebar:#0f0e17;
+  --bg:     #f7f4ee;
 }
 
-body{
-background:#f6f7fb;
-color:#222;
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  transition: background 0.3s, color 0.3s;
 }
 
-.app{
-display:flex;
-min-height:100vh;
+/* ── DARK MODE ── */
+body.dark {
+  --ink:    #ede8df;
+  --paper:  #13121c;
+  --muted:  #6b6577;
+  --border: #2a2736;
+  --card:   #1e1c2a;
+  --sidebar:#0d0c14;
+  --bg:     #17151f;
 }
 
-/* SIDEBAR */
+.app { display:flex; min-height:100vh; }
 
-.sidebar{
-width:250px;
-background:linear-gradient(180deg,#667eea,#764ba2);
-color:white;
-padding:30px 25px;
-display:flex;
-flex-direction:column;
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px;
+  background: var(--sidebar);
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.logo{
-font-size:26px;
-font-weight:700;
-margin-bottom:40px;
+.sidebar::after {
+  content:'';
+  position:absolute;
+  width:280px; height:280px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.05);
+  bottom:-80px; right:-100px;
+  pointer-events:none;
 }
 
-.menu{
-list-style:none;
-flex:1;
+.logo {
+  font-family:'Playfair Display', serif;
+  font-size:24px;
+  font-weight:900;
+  color:#fff;
+  letter-spacing:-0.5px;
+  margin-bottom:48px;
+}
+.logo span { color: var(--accent); }
+
+.menu { list-style:none; flex:1; }
+
+.menu li { margin-bottom:4px; }
+
+.menu li a,
+.menu li span {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 16px;
+  border-radius:10px;
+  text-decoration:none;
+  color:rgba(255,255,255,0.45);
+  font-size:14px;
+  font-weight:400;
+  transition:0.2s;
+  cursor:pointer;
 }
 
-.menu li{
-padding:14px 18px;
-border-radius:10px;
-margin-bottom:12px;
-transition:0.3s;
+.menu li.active span,
+.menu li a:hover,
+.menu li span:hover {
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+}
+.menu li.active span { font-weight:500; }
+
+.sidebar-footer {
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:20px;
 }
 
-.menu li:hover,
-.menu .active{
-background:rgba(255,255,255,0.2);
+.logout {
+  display:flex; align-items:center; gap:10px;
+  text-decoration:none;
+  color:rgba(255,255,255,0.35);
+  font-size:14px;
+  padding:10px 16px;
+  border-radius:10px;
+  transition:0.2s;
+}
+.logout:hover { background:rgba(255,107,53,0.12); color:var(--accent); }
+
+/* ── MAIN ── */
+.main { flex:1; padding:40px 48px; overflow-y:auto; }
+
+/* ── HEADER ── */
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:32px;
 }
 
-.menu a{
-text-decoration:none;
-color:white;
-display:block;
+.header-left h1 {
+  font-family:'Playfair Display', serif;
+  font-size:38px;
+  font-weight:900;
+  letter-spacing:-1.5px;
+  line-height:1.1;
+  color:var(--ink);
+}
+.header-left h1 em { font-style:italic; color:var(--accent); }
+.header-left p { color:var(--muted); font-size:14px; margin-top:5px; }
+
+.header-right { display:flex; align-items:center; gap:12px; }
+
+.dark-toggle {
+  background:none;
+  border:1.5px solid var(--border);
+  border-radius:30px;
+  padding:8px 16px;
+  cursor:pointer;
+  font-family:'DM Sans', sans-serif;
+  font-size:13px;
+  font-weight:500;
+  color:var(--muted);
+  transition:0.2s;
+}
+.dark-toggle:hover { border-color:var(--accent); color:var(--accent); }
+
+.avatar {
+  width:42px; height:42px;
+  background:var(--accent);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%;
+  font-family:'Playfair Display', serif;
+  font-size:18px;
+  font-weight:700;
+  text-decoration:none;
 }
 
-.logout{
-text-decoration:none;
-background:rgba(0,0,0,0.25);
-padding:12px;
-text-align:center;
-border-radius:10px;
-color:white;
-font-weight:600;
+/* ── TOOLBAR ── */
+.toolbar {
+  display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap;
 }
 
-/* MAIN */
+.toolbar input[type="text"] {
+  flex:1; min-width:200px;
+  padding:11px 18px;
+  border-radius:30px;
+  border:1.5px solid var(--border);
+  background:var(--card);
+  color:var(--ink);
+  font-family:'DM Sans', sans-serif;
+  font-size:14px;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.toolbar input[type="text"]:focus { border-color:var(--accent); }
+.toolbar input[type="text"]::placeholder { color:var(--muted); }
 
-.main{
-flex:1;
-padding:35px 45px;
-overflow-y:auto;
+.toolbar select {
+  padding:11px 18px;
+  border-radius:30px;
+  border:1.5px solid var(--border);
+  background:var(--card);
+  color:var(--ink);
+  font-family:'DM Sans', sans-serif;
+  font-size:14px;
+  cursor:pointer;
+  outline:none;
 }
 
-/* HEADER */
+.search-btn {
+  background:var(--ink);
+  color:#fff;
+  border:none;
+  padding:11px 24px;
+  border-radius:30px;
+  font-family:'DM Sans', sans-serif;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  transition:background 0.2s;
+}
+.search-btn:hover { background:var(--accent); }
 
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:35px;
+/* ── EDITOR ── */
+.editor {
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:28px;
+  margin-bottom:36px;
 }
 
-.header h1{
-font-size:28px;
+.editor-title {
+  font-family:'Playfair Display', serif;
+  font-size:15px;
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.editor-title::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--border);
 }
 
-.header p{
-color:#666;
+.editor-row {
+  display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;
 }
 
-.avatar{
-width:45px;
-height:45px;
-background:linear-gradient(135deg,#667eea,#764ba2);
-color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-border-radius:50%;
+.editor-row input[type="text"],
+.editor-row input[type="date"],
+.editor-row select {
+  flex:1; min-width:140px;
+  padding:11px 14px;
+  border-radius:12px;
+  border:1.5px solid var(--border);
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'DM Sans', sans-serif;
+  font-size:14px;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.editor-row input:focus,
+.editor-row select:focus { border-color:var(--accent); }
+.editor-row input::placeholder { color:var(--muted); }
+
+.color-row {
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+}
+.color-row label { font-size:13px; color:var(--muted); font-weight:500; }
+.color-row input[type="color"] {
+  width:34px; height:34px;
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  cursor:pointer;
+  padding:2px;
+  background:var(--bg);
 }
 
-/* EDITOR */
+.editor textarea {
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  height:100px;
+  resize:none;
+  margin-bottom:6px;
+  font-family:'DM Sans', sans-serif;
+  font-size:14px;
+  background:var(--bg);
+  color:var(--ink);
+  outline:none;
+  transition:border-color 0.2s;
+  line-height:1.6;
+}
+.editor textarea:focus { border-color:var(--accent); }
+.editor textarea::placeholder { color:var(--muted); }
 
-.editor{
-background:white;
-padding:25px;
-border-radius:18px;
-box-shadow:0 12px 30px rgba(0,0,0,0.1);
-margin-bottom:40px;
+.counter { font-size:12px; color:var(--muted); text-align:right; margin-bottom:14px; }
+
+.add-btn {
+  background:var(--ink);
+  color:#fff;
+  border:none;
+  padding:12px 28px;
+  border-radius:30px;
+  font-family:'DM Sans', sans-serif;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  transition:background 0.2s;
+  position:relative;
+  overflow:hidden;
+}
+.add-btn::after {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--accent), #ff8c42);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.add-btn:hover::after { opacity:1; }
+.add-btn span { position:relative; z-index:1; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:20px;
 }
 
-.editor-row{
-display:flex;
-gap:15px;
-margin-bottom:15px;
+/* ── NOTES GRID ── */
+.notes-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:20px;
 }
 
-.editor-row input[type="text"]{
-flex:2;
-padding:10px;
-border-radius:10px;
-border:1px solid #ddd;
+.note-card {
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+  transition:transform 0.2s, box-shadow 0.2s;
+  position:relative;
+  overflow:hidden;
 }
 
-.editor-row input[type="date"]{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:1px solid #ddd;
+.note-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  background:linear-gradient(90deg, var(--accent), #ff8c42);
+  opacity:0;
+  transition:opacity 0.2s;
 }
 
-.editor textarea{
-width:100%;
-border:1px solid #ddd;
-border-radius:10px;
-padding:10px;
-height:90px;
-resize:none;
-margin-bottom:15px;
+.note-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.1); }
+.note-card:hover::before { opacity:1; }
+body.dark .note-card:hover { box-shadow:0 16px 40px rgba(0,0,0,0.4); }
+
+.note-meta {
+  display:flex; align-items:center; gap:8px;
+  flex-wrap:wrap; margin-bottom:10px;
 }
 
-.editor button{
-background:linear-gradient(135deg,#667eea,#764ba2);
-color:white;
-border:none;
-padding:12px 26px;
-border-radius:30px;
-cursor:pointer;
-font-weight:600;
+.note-date {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--bg);
+  color:var(--muted);
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:500;
+  border:1px solid var(--border);
 }
 
-/* NOTES */
+.tag-badge {
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:500;
+}
+.tag-Work     { background:#d1fae5; color:#065f46; }
+.tag-Personal { background:#ede9fe; color:#5b21b6; }
+.tag-Study    { background:#fef3c7; color:#92400e; }
+.tag-Other    { background:#f1f5f9; color:#475569; }
+body.dark .tag-Work     { background:#052e16; color:#6ee7b7; }
+body.dark .tag-Personal { background:#2e1065; color:#c4b5fd; }
+body.dark .tag-Study    { background:#2d1e02; color:#fcd34d; }
+body.dark .tag-Other    { background:#1e293b; color:#94a3b8; }
 
-.notes-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-gap:25px;
+.pinned-indicator {
+  position:absolute; top:16px; right:16px; font-size:14px;
 }
 
-.note-card{
-background:white;
-padding:22px;
-border-radius:18px;
-box-shadow:0 12px 30px rgba(0,0,0,0.12);
-transition:0.3s;
+.note-updated { font-size:11px; color:var(--muted); margin-bottom:10px; }
+
+.note-card h3 {
+  font-family:'Playfair Display', serif;
+  font-size:17px;
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:8px;
+  letter-spacing:-0.3px;
+  line-height:1.3;
 }
 
-.note-card:hover{
-transform:translateY(-6px);
+.note-card p {
+  color:var(--muted);
+  font-size:13.5px;
+  line-height:1.6;
+  margin-bottom:16px;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
 }
 
-.note-date{
-display:inline-block;
-background:#eef2ff;
-color:#667eea;
-padding:4px 10px;
-border-radius:20px;
-font-size:12px;
-font-weight:600;
-margin-bottom:10px;
-}
+/* ── CARD ACTIONS ── */
+.card-actions { display:flex; gap:6px; flex-wrap:wrap; }
 
-.note-card h3{
-margin-bottom:8px;
+.card-actions button,
+.card-actions a {
+  font-family:'DM Sans', sans-serif;
+  font-size:12px;
+  font-weight:500;
+  padding:6px 12px;
+  border-radius:20px;
+  border:1.5px solid var(--border);
+  cursor:pointer;
+  text-decoration:none;
+  transition:0.2s;
+  background:transparent;
+  color:var(--muted);
 }
+.card-actions button:hover,
+.card-actions a:hover { border-color:var(--ink); color:var(--ink); }
 
-.note-card p{
-color:#555;
-font-size:14px;
-}
+.pin-btn.pinned   { border-color:#fbbf24; color:#92400e; background:#fef9c3; }
+.edit-btn:hover   { border-color:var(--accent) !important; color:var(--accent) !important; }
+.delete-btn:hover { border-color:#dc2626 !important; color:#dc2626 !important; }
 
-.delete-btn{
-border:none;
-background:none;
-cursor:pointer;
-font-size:18px;
-float:right;
+/* ── EMPTY STATE ── */
+.no-notes {
+  grid-column:1/-1;
+  text-align:center;
+  padding:80px 20px;
+  color:var(--muted);
 }
+.no-notes .big {
+  font-family:'Playfair Display', serif;
+  font-size:52px;
+  opacity:0.2;
+  margin-bottom:12px;
+}
+.no-notes p { font-size:15px; }
 
 </style>
 </head>
 
 <body>
-
 <div class="app">
 
-<!-- SIDEBAR -->
-
+<!-- ── SIDEBAR ── -->
 <aside class="sidebar">
-
-<h2 class="logo">Notes</h2>
-
-<ul class="menu">
-<li class="active">📝 My Notes</li>
-
-<li>
-<a href="/profile">👤 Profile</a>
-</li>
-
-<li>⚙ Settings</li>
-</ul>
-
-<a href="/logout" class="logout">Logout</a>
-
+  <div class="logo">Notes<span>.</span></div>
+  <ul class="menu">
+    <li class="active"><span><span>📝</span> My Notes</span></li>
+    <li><a href="/profile"><span>👤</span> Profile</a></li>
+    <li><span><span>⚙️</span> Settings</span></li>
+  </ul>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout"><span>🚪</span> Logout</a>
+  </div>
 </aside>
 
-<!-- MAIN -->
-
+<!-- ── MAIN ── -->
 <main class="main">
 
-<header class="header">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <h1>Hello, <em><%= user.name %></em> 👋</h1>
+      <p>Your personal notes space</p>
+    </div>
+    <div class="header-right">
+      <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
+      <a href="/profile" class="avatar"><%= user.name.charAt(0).toUpperCase() %></a>
+    </div>
+  </header>
 
-<div>
-<h1>Hello, <%= user.name %> 👋</h1>
-<p>Your personal notes space</p>
-</div>
+  <!-- SEARCH + SORT -->
+  <form method="GET" action="/login">
+    <div class="toolbar">
+      <input
+        type="text"
+        name="search"
+        placeholder="Search notes by title or content..."
+        value="<%= typeof search !== 'undefined' ? search : '' %>"
+      >
+      <select name="sort">
+        <option value="newest" <%= (typeof sort !== 'undefined' && sort === 'newest') ? 'selected' : '' %>>↓ Newest first</option>
+        <option value="oldest" <%= (typeof sort !== 'undefined' && sort === 'oldest') ? 'selected' : '' %>>↑ Oldest first</option>
+      </select>
+      <button type="submit" class="search-btn">Search</button>
+    </div>
+  </form>
 
-<div class="avatar">
-<a href="/profile" style="text-decoration:none;color:white;">👤</a>
-</div>
+  <!-- ADD NOTE -->
+  <form action="/add/<%= user._id %>" method="POST">
+    <div class="editor">
+      <div class="editor-title">New note</div>
+      <div class="editor-row">
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="date" name="Date" required>
+        <select name="tag">
+          <option value="Other">🏷 Other</option>
+          <option value="Work">💼 Work</option>
+          <option value="Personal">👤 Personal</option>
+          <option value="Study">📚 Study</option>
+        </select>
+      </div>
+      <div class="color-row">
+        <label>Card color</label>
+        <input type="color" name="color" value="#ffffff">
+      </div>
+      <textarea name="content" id="noteContent" placeholder="Write your note here..." required></textarea>
+      <div class="counter" id="counter">0 words · 0 characters</div>
+      <button type="submit" class="add-btn"><span>+ Add note</span></button>
+    </div>
+  </form>
 
-</header>
+  <!-- NOTES -->
+  <div class="section-label"><%= notes.length %> note<%= notes.length !== 1 ? 's' : '' %></div>
 
-<!-- ADD NOTE -->
+  <section class="notes-grid">
 
-<form action="/add/<%= user._id %>" method="POST">
+    <% if(notes.length === 0){ %>
+      <div class="no-notes">
+        <div class="big">📝</div>
+        <p>No notes yet. Add your first one above.</p>
+      </div>
+    <% } %>
 
-<section class="editor">
+    <% for(let i = 0; i < notes.length; i++){ %>
 
-<div class="editor-row">
-<input type="text" name="title" placeholder="Note title" required>
-<input type="date" name="Date" required>
-</div>
+      <div class="note-card"
+        style="
+          background:<%= notes[i].color && notes[i].color !== '#ffffff' ? notes[i].color + '18' : 'var(--card)' %>;
+          border-color:<%= notes[i].color && notes[i].color !== '#ffffff' ? notes[i].color + '66' : 'var(--border)' %>;
+        ">
 
-<textarea name="content" placeholder="Write your note here..." required></textarea>
+        <% if(notes[i].pinned){ %>
+          <span class="pinned-indicator" title="Pinned">📌</span>
+        <% } %>
 
-<button type="submit">Add Note</button>
+        <div class="note-meta">
+          <span class="note-date">📅 <%= new Date(notes[i].Date).toLocaleDateString("en-IN") %></span>
+          <span class="tag-badge tag-<%= notes[i].tag || 'Other' %>"><%= notes[i].tag || 'Other' %></span>
+        </div>
 
-</section>
+        <div class="note-updated">Edited <%= new Date(notes[i].updatedAt).toLocaleString("en-IN") %></div>
 
-</form>
+        <h3><%= notes[i].title %></h3>
+        <p><%= notes[i].content %></p>
 
-<!-- NOTES -->
+        <div class="card-actions">
+          <form action="/pin/<%= notes[i]._id %>" method="POST" style="display:contents;">
+            <button class="pin-btn <%= notes[i].pinned ? 'pinned' : 'unpinned' %>">
+              <%= notes[i].pinned ? '📌 Unpin' : '📍 Pin' %>
+            </button>
+          </form>
+          <a href="/edit/<%= notes[i]._id %>" class="edit-btn">✏️ Edit</a>
+          <form action="/delete/<%= notes[i]._id %>" method="POST" style="display:contents;">
+            <button class="delete-btn">🗑 Delete</button>
+          </form>
+        </div>
 
-<section class="notes-grid">
+      </div>
 
-<% for(let i=0;i<notes.length;i++){ %>
+    <% } %>
 
-<div class="note-card">
-
-<div class="note-date">
-📅 <%= new Date(notes[i].Date).toLocaleDateString("en-IN") %>
-</div>
-
-<h3><%= notes[i].title %></h3>
-
-<p><%= notes[i].content %></p>
-
-<form action="/delete/<%= notes[i]._id %>" method="POST">
-
-<button class="delete-btn">🗑️</button>
-
-</form>
-
-</div>
-
-<% } %>
-
-</section>
-
+  </section>
 </main>
-
 </div>
 
+<script>
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  document.getElementById("darkBtn").textContent = isDark ? "☀️ Light" : "🌙 Dark";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  if(localStorage.getItem("theme") === "dark"){
+    document.body.classList.add("dark");
+    document.getElementById("darkBtn").textContent = "☀️ Light";
+  }
+  const textarea = document.getElementById("noteContent");
+  const counter  = document.getElementById("counter");
+  textarea.addEventListener("input", () => {
+    const text  = textarea.value;
+    const chars = text.length;
+    const words = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+    counter.textContent = `${words} word${words !== 1 ? "s" : ""} · ${chars} character${chars !== 1 ? "s" : ""}`;
+  });
+});
+</script>
 </body>
 </html>
